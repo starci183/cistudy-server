@@ -14,7 +14,7 @@ export default class ProcessMpegDashProducer {
     async add(file: Express.Multer.File) {
         const metadata = await this.mpegDashProcessorService.createTask(file)
         await this.convertQueue.add(metadata)
-        //await this.processService.processVideo(metadata)
+        //await this.mpegDashProcessorService.processVideo(metadata)
         return metadata
     }
 }   

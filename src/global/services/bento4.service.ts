@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common"
 import { join } from "path"
 import { exec } from "child_process"
+import { pathsConfig } from "@config"
 
 const BINARY_PATH = "./tools/Bento4-SDK/bin"
 
@@ -24,7 +25,7 @@ export default class Bento4Service {
 	}
 
 	async checkFragments(assetId: string, videoName: string) {
-		const videoPath = join(process.cwd(), "tasks", assetId, videoName)
+		const videoPath = join(pathsConfig().processMpegDashTasksDirectory, assetId, videoName)
 
 		const execResult = await this.execute(`mp4info.exe "${videoPath}"`)
 		const lines = execResult.split("\n")
@@ -47,10 +48,9 @@ export default class Bento4Service {
 	}
 
 	async fragmentVideo(assetId: string, videoName: string) {
-		const videoPath = join(process.cwd(), "tasks", assetId, videoName)
+		const videoPath = join(pathsConfig().processMpegDashTasksDirectory, assetId, videoName)
 		const outputDir = join(
-			process.cwd(),
-			"tasks",
+			pathsConfig().processMpegDashTasksDirectory,
 			assetId,
 			`${videoName}_fragmented`,
 		)
@@ -71,12 +71,12 @@ export default class Bento4Service {
 
 	async generateMpegDashManifestFromFragments(assetId: string, fragmentedVideoNames: string[]) {
 		const fragmentedPaths = fragmentedVideoNames.map((videoName) =>
-			join(process.cwd(), "tasks", assetId, `${videoName}_fragmented`),
+			join(pathsConfig().processMpegDashTasksDirectory, assetId, `${videoName}_fragmented`),
 		)
 		const line = fragmentedPaths.map((path) => `"${path}"`).join(" ")
 
 		//output same file
-		const outputDir = join(process.cwd(), "tasks", assetId)
+		const outputDir = join(pathsConfig().processMpegDashTasksDirectory, assetId)
 
 		const execResult = await this.execute(
 			`mp4dash.bat --mpd-name manifest.mpd ${line} -o "${outputDir}" --use-segment-timeline --subtitles --force`,

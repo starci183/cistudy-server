@@ -20,9 +20,7 @@ import WorkersModule from "./workers/workers.module"
 				databaseConfig,
 				jwtConfig,
 				servicesConfig, 
-				appConfig, 
-				videoConfig, 
-				extnameConfig
+				appConfig
 			]
 		}),
 

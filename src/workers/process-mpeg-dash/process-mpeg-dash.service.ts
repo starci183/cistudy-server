@@ -3,11 +3,10 @@ import { Injectable, Logger } from "@nestjs/common"
 import { promises as fsPromise } from "fs"
 import { basename, dirname, extname, join } from "path"
 import { FfmpegService, Bento4Service, SupabaseService } from "@global"
-import { videoConfig } from "@config"
+import { pathsConfig, videoConfig } from "@config"
 import { validate as validateUuidv4 } from "uuid"
 
 const MANIFEST_FILE_NAME = "manifest.mpd"
-const PROCESS_DIRECTORY = join(process.cwd(), "tasks", "process-mpeg-dash")
 
 @Injectable()
 export default class ProcessMpegDashService {
@@ -29,7 +28,7 @@ export default class ProcessMpegDashService {
 		const { originalname: filename, buffer } = file
 		if (!this.validateVideoExtension(filename)) throw new Error("Invalid video file extension")
 		const metadata = await this.supabaseService.upload(file)
-		const dir = join(PROCESS_DIRECTORY, metadata.assetId)
+		const dir = join(pathsConfig().processMpegDashTasksDirectory, metadata.assetId)
 		await fsPromise.mkdir(dir)
 		await fsPromise.writeFile(join(dir, filename), buffer)
 		return metadata
@@ -68,7 +67,7 @@ export default class ProcessMpegDashService {
 	
 	private async uploadMpegDashManifest(assetId: string) {
 		const fileAndSubdirectories: Array<FileAndSubdirectory> = []
-		const path = join(process.cwd(), "tasks", assetId)
+		const path = join(pathsConfig().processMpegDashTasksDirectory, assetId)
 		await this.uploadMpegDashManifestRecusive(path, fileAndSubdirectories)
 		await this.supabaseService.update(assetId, fileAndSubdirectories, {
 			assetId,
@@ -77,7 +76,7 @@ export default class ProcessMpegDashService {
 	}
 
 	private async cleanUp(assetId: string) {
-		const path = join(process.cwd(), "tasks", assetId)
+		const path = join(pathsConfig().processMpegDashTasksDirectory, assetId)
 		await fsPromise.rm(path, { recursive: true })
 	}
 
