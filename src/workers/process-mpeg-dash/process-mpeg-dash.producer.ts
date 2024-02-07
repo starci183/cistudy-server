@@ -7,9 +7,9 @@ import { QUEUE_NAME } from "./process-mpeg-dash.constants"
 @Injectable()
 export default class ProcessMpegDashProducer {
     constructor(
-        private readonly mpegDashProcessorService: ProcessMpegDashService,
-        @InjectQueue(QUEUE_NAME) private readonly convertQueue: Queue
-    ) { }
+    private readonly mpegDashProcessorService: ProcessMpegDashService,
+    @InjectQueue(QUEUE_NAME) private readonly convertQueue: Queue,
+    ) {}
 
     async add(file: Express.Multer.File) {
         const metadata = await this.mpegDashProcessorService.createTask(file)
@@ -17,4 +17,4 @@ export default class ProcessMpegDashProducer {
         //await this.mpegDashProcessorService.processVideo(metadata)
         return metadata
     }
-}   
+}

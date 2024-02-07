@@ -13,7 +13,7 @@ export class CreateLectureData {
 }
 export class CreateLectureInput implements IAuthInput<CreateLectureData> {
 	@IsUUID("4")
-		userId: string
+	    userId: string
 	data: CreateLectureData
 	files: Express.Multer.File[]
 }

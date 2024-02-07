@@ -8,13 +8,15 @@ import ProcessMpegDashService from "./process-mpeg-dash.service"
 @Global()
 @Module({
     imports: [
-        BullModule.registerQueue(
-            {
-                name: QUEUE_NAME,
-            }
-        ),
+        BullModule.registerQueue({
+            name: QUEUE_NAME,
+        }),
     ],
-    exports: [ProcessMpegDashProducer, ProcessMpegDashConsumer, ProcessMpegDashService],
-    providers: [ProcessMpegDashProducer, ProcessMpegDashConsumer, ProcessMpegDashService],
+    exports: [ProcessMpegDashProducer],
+    providers: [
+        ProcessMpegDashProducer,
+        ProcessMpegDashConsumer,
+        ProcessMpegDashService,
+    ],
 })
-export default class ProcessMpegDashModule { }
+export default class ProcessMpegDashModule {}

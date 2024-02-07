@@ -14,6 +14,6 @@ export class CreateSectionData {
 
 export class CreateSectionInput implements IAuthInput<CreateSectionData> {
 	@IsUUID("4")
-		userId: string
+	    userId: string
 	data: CreateSectionData
 }

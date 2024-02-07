@@ -6,23 +6,23 @@ import { FindOneCourseInput, FindManyCoursesInput } from "./shared"
 
 @Injectable()
 export default class CourseService {
-	constructor(
+    constructor(
     @InjectRepository(CourseMySqlEntity)
     private readonly courseMySqlRepository: Repository<CourseMySqlEntity>,
-	) {}
+    ) {}
 
-	async findOneCourse(args: FindOneCourseInput): Promise<CourseMySqlEntity> {
-		return await this.courseMySqlRepository.findOneBy(args)
-	}
+    async findOneCourse(args: FindOneCourseInput): Promise<CourseMySqlEntity> {
+        return await this.courseMySqlRepository.findOneBy(args)
+    }
 
-	async findManyCourses(args: FindManyCoursesInput): Promise<CourseMySqlEntity[]> {
-		console.log(args)
-		const founds = await this.courseMySqlRepository.findAndCount({
-			relations: {
-				creator: true
-			}
-		})
-		console.dir(founds, { depth: null})
-		return founds[0]
-	}
+    async findManyCourses(args: FindManyCoursesInput): Promise<CourseMySqlEntity[]> {
+        console.log(args)
+        const founds = await this.courseMySqlRepository.findAndCount({
+            relations: {
+                creator: true
+            }
+        })
+        console.dir(founds, { depth: null})
+        return founds[0]
+    }
 }
