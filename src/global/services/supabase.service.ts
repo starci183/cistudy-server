@@ -3,6 +3,7 @@ import { Injectable, OnModuleInit } from "@nestjs/common"
 import { createClient } from "@supabase/supabase-js"
 import StorageFileApi from "@supabase/storage-js/dist/module/packages/StorageFileApi"
 import {
+    AnyFile,
     FileAndSubdirectory,
     Metadata,
     MinimalFile,
@@ -71,7 +72,7 @@ export default class SupabaseService implements OnModuleInit {
     }
 
     async upload(
-        file: MinimalFile | Express.Multer.File,
+        file: AnyFile,
         fileAndSubdirectoriesExtra: Array<FileAndSubdirectory> = [],
     ): Promise<Metadata> {
         const assetId = uuid4()

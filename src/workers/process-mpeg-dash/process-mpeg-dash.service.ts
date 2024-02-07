@@ -1,4 +1,4 @@
-import { FileAndSubdirectory, Metadata } from "@common"
+import { AnyFile, FileAndSubdirectory, Metadata, isMinimalFile } from "@common"
 import { Injectable, Logger } from "@nestjs/common"
 import { promises as fsPromise } from "fs"
 import { basename, dirname, extname, join } from "path"
@@ -30,8 +30,10 @@ export default class ProcessMpegDashService {
         return allowedExtensions.includes(extname(fileName))
     }
 
-    async createTask(file: Express.Multer.File): Promise<Metadata> {
-        const { originalname: filename, buffer } = file
+    async createTask(file: AnyFile): Promise<Metadata> {
+        const _isMinimalFile = isMinimalFile(file)
+        const filename = _isMinimalFile ? file.filename : file.originalname
+        const fileBody = _isMinimalFile ? file.fileBody : file.buffer
         if (!this.validateVideoExtension(filename))
             throw new Error("Invalid video file extension")
         const metadata = await this.supabaseService.upload(file)
@@ -40,7 +42,7 @@ export default class ProcessMpegDashService {
             metadata.assetId,
         )
         await fsPromise.mkdir(dir)
-        await fsPromise.writeFile(join(dir, filename), buffer)
+        await fsPromise.writeFile(join(dir, filename), fileBody)
         return metadata
     }
 
