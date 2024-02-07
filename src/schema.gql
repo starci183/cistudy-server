@@ -1,0 +1,100 @@
+type UserModel {
+  userId: ID!
+  email: String!
+  password: String
+  avatarUrl: String
+  phoneNumber: String
+  balance: Float
+  role: UserRole!
+  walletId: String
+  firstName: String
+  lastName: String
+  birthdate: DateTime
+  verified: Boolean!
+  kind: UserKind!
+  externalId: String
+}
+
+enum UserRole {
+  User
+  Moderator
+  Administrator
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+enum UserKind {
+  Local
+  Google
+  Facebook
+}
+
+type CourseModel {
+  courseId: ID!
+  title: String!
+  thumbnailId: String
+  description: String!
+  price: Float!
+  verifiedStatus: VerifiedStatus
+  isDraft: Boolean!
+  creator: UserModel!
+  isDeleted: Boolean!
+  previewVideoId: String
+  targets: String
+  includes: String
+}
+
+enum VerifiedStatus {
+  Pending
+  Approved
+  Rejected
+}
+
+type PostModel {
+  postId: ID!
+  title: String!
+  course: CourseModel!
+  postContents: [PostContentEntity!]!
+  creator: UserModel!
+}
+
+type PostContentEntity {
+  postContentId: ID!
+  index: Int!
+  content: String!
+  contentType: String!
+  postId: String!
+  post: [PostModel!]!
+}
+
+type Query {
+  findOneCourse(input: FindOneCourseInput!): CourseModel!
+  findManyCourses(input: FindManyCoursesInput): [CourseModel!]!
+  findOnePost(input: FindOnePostInput!): PostModel!
+  findManyPosts(input: FindManyPostsInput!): [PostModel!]!
+}
+
+input FindOneCourseInput {
+  courseId: ID!
+}
+
+input FindManyCoursesInput {
+  filter: CourseFilterModel
+}
+
+input CourseFilterModel {
+  category: String
+}
+
+input FindOnePostInput {
+  postId: ID!
+}
+
+input FindManyPostsInput {
+  courseId: String!
+  take: Int!
+  skip: Int!
+}
