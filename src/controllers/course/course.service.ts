@@ -74,7 +74,7 @@ export default class CourseService {
 
         let videoId: string
         const video = input.files.at(0)
-        console.log(video)
+
         const uploadVideoPromise = async () => {
             const { assetId } = await this.mpegDashProcessorProducer.add(video)
             videoId = assetId

@@ -120,9 +120,9 @@ export default class SupabaseService implements OnModuleInit {
     ) {
         for (const { file, subdirectory } of fileAndSubdirectories) {
             const _isMinimalFile = isMinimalFile(file)
+
             const filename = _isMinimalFile ? file.filename : file.originalname
             const fileBody = _isMinimalFile ? file.fileBody : file.buffer
-
             const dir = subdirectory ? join(assetId, subdirectory) : assetId
             await this.bucket.upload(join(dir, filename), fileBody, {
                 upsert: true,
