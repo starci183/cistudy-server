@@ -2,20 +2,21 @@ import { Controller, NotFoundException } from "@nestjs/common"
 import { CourseMySqlEntity, LectureMySqlEntity, SectionMySqlEntity } from "@database"
 import { InjectRepository } from "@nestjs/typeorm"
 import { Repository } from "typeorm"
-import { MpegDashProcessorService, SupabaseService } from "@global"
+import { SupabaseService } from "@global"
 import { CreateCourseInput, CreateSectionInput, CreateLectureInput } from "./shared"
+import { ProcessMpegDashProducer } from "@workers"
 
 @Controller()
 export default class CourseService {
 	constructor(
-        @InjectRepository(CourseMySqlEntity)
-        private readonly courseMySqlRepository: Repository<CourseMySqlEntity>,
-        @InjectRepository(SectionMySqlEntity)
-        private readonly sectionMySqlRepository: Repository<SectionMySqlEntity>,
-        @InjectRepository(LectureMySqlEntity)
-        private readonly lectureMySqlRepository: Repository<LectureMySqlEntity>,
-        private readonly supabaseService: SupabaseService,
-        private readonly mpegDashProcessorService: MpegDashProcessorService,
+		@InjectRepository(CourseMySqlEntity)
+		private readonly courseMySqlRepository: Repository<CourseMySqlEntity>,
+		@InjectRepository(SectionMySqlEntity)
+		private readonly sectionMySqlRepository: Repository<SectionMySqlEntity>,
+		@InjectRepository(LectureMySqlEntity)
+		private readonly lectureMySqlRepository: Repository<LectureMySqlEntity>,
+		private readonly supabaseService: SupabaseService,
+		private readonly mpegDashProcessorProducer: ProcessMpegDashProducer,
 	) { }
 
 	async createCourse(input: CreateCourseInput): Promise<string> {
@@ -50,45 +51,45 @@ export default class CourseService {
 		})
 
 		if (created)
-			return `A course with id ${created.courseId} has been creeated successfully.`	
+			return `A course with id ${created.courseId} has been creeated successfully.`
 	}
 
 	async createSection(input: CreateSectionInput): Promise<string> {
-    	const { courseId, title } = input.data
-    	const course = await this.courseMySqlRepository.findOneBy({
-    		courseId
-    	})
-    	if (!course) throw new NotFoundException("Course not found.")
-    	const created = await this.sectionMySqlRepository.save({
-    		courseId,
-    		title
-    	})
-    	if (created)
-    		return `A section with id ${created.sectionId} has been creeated successfully.`
+		const { courseId, title } = input.data
+		const course = await this.courseMySqlRepository.findOneBy({
+			courseId
+		})
+		if (!course) throw new NotFoundException("Course not found.")
+		const created = await this.sectionMySqlRepository.save({
+			courseId,
+			title
+		})
+		if (created)
+			return `A section with id ${created.sectionId} has been creeated successfully.`
 	}
 
 	async createLecture(input: CreateLectureInput): Promise<string> {
-    	const { title, sectionId } = input.data
-    	const promises: Array<Promise<void>> = []
+		const { title, sectionId } = input.data
+		const promises: Array<Promise<void>> = []
 
-    	let videoId: string
-    	const video = input.files.at(0)
-    	console.log(video)
-    	const uploadVideoPromise = async () => {
-    		const { assetId } = await this.mpegDashProcessorService.createTask(video)
-    		videoId = assetId
-    	}
-    	promises.push(uploadVideoPromise())
+		let videoId: string
+		const video = input.files.at(0)
+		console.log(video)
+		const uploadVideoPromise = async () => {
+			const { assetId } = await this.mpegDashProcessorProducer.add(video)
+			videoId = assetId
+		}
+		promises.push(uploadVideoPromise())
 
-    	await Promise.all(promises)
+		await Promise.all(promises)
 
-    	const created = await this.lectureMySqlRepository.save({
-    		videoId,
-    		title,
-    		sectionId
-    	})
+		const created = await this.lectureMySqlRepository.save({
+			videoId,
+			title,
+			sectionId
+		})
 
-    	if (created)
-    		return `A lecture with id ${created.lectureId} has been creeated successfully.`
+		if (created)
+			return `A lecture with id ${created.lectureId} has been creeated successfully.`
 	}
 }

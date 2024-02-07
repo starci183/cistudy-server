@@ -2,18 +2,16 @@ import { FileAndSubdirectory, Metadata } from "@common"
 import { Injectable, Logger } from "@nestjs/common"
 import { promises as fsPromise } from "fs"
 import { basename, dirname, extname, join } from "path"
-import FfmpegService from "./ffmpeg.service"
-import Bento4Service from "./bento4.service"
+import { FfmpegService, Bento4Service, SupabaseService } from "@global"
 import { videoConfig } from "@config"
 import { validate as validateUuidv4 } from "uuid"
-import SupabaseService from "./supabase.service"
 
 const MANIFEST_FILE_NAME = "manifest.mpd"
 const PROCESS_DIRECTORY = join(process.cwd(), "tasks", "process-mpeg-dash")
 
 @Injectable()
-export default class MpegDashProcessorService {
-	private readonly logger = new Logger(MpegDashProcessorService.name)
+export default class ProcessMpegDashService {
+	private readonly logger = new Logger(ProcessMpegDashService.name)
 	constructor(
 		private readonly supabaseService: SupabaseService,
 		private readonly ffmegService: FfmpegService,
@@ -67,6 +65,7 @@ export default class MpegDashProcessorService {
 			}
 		}
 	}
+	
 	private async uploadMpegDashManifest(assetId: string) {
 		const fileAndSubdirectories: Array<FileAndSubdirectory> = []
 		const path = join(process.cwd(), "tasks", assetId)

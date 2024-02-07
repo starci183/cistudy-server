@@ -1,15 +1,14 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { Field, ID, InputType, ObjectType } from "@nestjs/graphql"
+import { Field, InputType } from "@nestjs/graphql"
 
 @InputType()
-export class CourseFilterModel {
+export class CourseFilterInput {
   @Field(() => String, { nullable: true })
-  	category: string
+  category: string
 }
 
 @InputType()
 export class FindManyCoursesInput {
-  @Field(() => CourseFilterModel, { nullable: true })
-  	filter: CourseFilterModel
+  @Field(() => CourseFilterInput, { nullable: true })
+  filter: CourseFilterInput
 }
 

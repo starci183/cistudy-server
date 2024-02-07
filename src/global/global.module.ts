@@ -21,7 +21,6 @@ import {
 	Bento4Service,
 	FfmpegService,
 	FirebaseService,
-	MpegDashProcessorService,
 	MailerService,
 	Sha256Service,
 	SupabaseService
@@ -45,17 +44,17 @@ import {
 			PostCommentMySqlEntity,
 			PostCommentContentMySqlEntity,
 			PostCommentLikeMySqlEntity
-		])],
+		])
+	],
 	exports: [
 		JwtService,
 		AuthManagerService,
 		Bento4Service,
 		FfmpegService,
 		FirebaseService,
-		MpegDashProcessorService,
 		MailerService,
 		Sha256Service,
-		SupabaseService
+		SupabaseService,
 	],
 	providers: [
 		JwtService,
@@ -63,10 +62,9 @@ import {
 		Bento4Service,
 		FfmpegService,
 		FirebaseService,
-		MpegDashProcessorService,
 		MailerService,
 		Sha256Service,
-		SupabaseService
+		SupabaseService,
 	],
 })
 export default class GlobalModule { }

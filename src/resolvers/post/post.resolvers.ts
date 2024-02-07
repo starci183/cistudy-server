@@ -9,12 +9,12 @@ export default class PostResolvers {
     private readonly postService: PostService,
 	) {}
   @Query(() => PostMySqlEntity)
-	async findOnePost(@Args("input") args: FindOnePostInput) {
-		return this.postService.findOnePost(args)
+	async findOnePost(@Args("input") input: FindOnePostInput) {
+		return this.postService.findOnePost(input)
 	}
 
   @Query(() => [PostMySqlEntity])
-  async findManyPosts(@Args("input") args: FindManyPostsInput) {
-  	return this.postService.findManyPosts(args)
+  async findManyPosts(@Args("input") input: FindManyPostsInput) {
+  	return this.postService.findManyPosts(input)
   }
 }

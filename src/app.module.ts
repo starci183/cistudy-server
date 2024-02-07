@@ -8,6 +8,8 @@ import { ResolversModule } from "./resolvers"
 import { ApolloServerPluginLandingPageLocalDefault } from "@apollo/server/plugin/landingPage/default"
 import { GraphQLModule } from "@nestjs/graphql"
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo"
+import { BullModule } from "@nestjs/bull"
+import WorkersModule from "./workers/workers.module"
 
 @Module({
 	imports: [
@@ -22,6 +24,13 @@ import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo"
 				videoConfig, 
 				extnameConfig
 			]
+		}),
+
+		BullModule.forRoot({
+			redis: {
+				host: databaseConfig().redis.host,
+				port: databaseConfig().redis.port
+			}
 		}),
     
 		TypeOrmModule.forRoot({
@@ -44,7 +53,8 @@ import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo"
 
 		ResolversModule,
 		GlobalModule,
-		ControllersModule
+		ControllersModule,
+		WorkersModule
 	],
 
 

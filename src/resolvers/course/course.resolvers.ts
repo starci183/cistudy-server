@@ -9,12 +9,12 @@ export default class CourseResolvers {
     private readonly courseService: CourseService,
 	) {}
   @Query(() => CourseMySqlEntity)
-	async findOneCourse(@Args("input") args: FindOneCourseInput) {
-		return await this.courseService.findOneCourse(args)
+	async findOneCourse(@Args("input") input: FindOneCourseInput) {
+		return await this.courseService.findOneCourse(input)
 	}
 
 	@Query(() => [CourseMySqlEntity])
-  async findManyCourses(@Args("input", { nullable: true }) args: FindManyCoursesInput) {
-  	return await this.courseService.findManyCourses(args)
+  async findManyCourses(@Args("input", { nullable: true }) input: FindManyCoursesInput) {
+  	return await this.courseService.findManyCourses(input)
   }
 }

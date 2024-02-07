@@ -24,6 +24,7 @@ type PostEntity {
   title: String!
   creatorId: String!
   courseId: String!
+  createdAt: String!
 }
 
 type UserEntity {
@@ -72,10 +73,10 @@ input FindOneCourseInput {
 }
 
 input FindManyCoursesInput {
-  filter: CourseFilterModel
+  filter: CourseFilterInput
 }
 
-input CourseFilterModel {
+input CourseFilterInput {
   category: String
 }
 

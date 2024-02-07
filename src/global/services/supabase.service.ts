@@ -21,7 +21,7 @@ export default class SupabaseService implements OnModuleInit {
 		this.bucket = supabase.storage.from("cistudy")
 	}
 
-	public async get(
+	async get(
 		assetIdOrPath: string
 	): Promise<MinimalFile> {
 		if (validateUuid4(assetIdOrPath))

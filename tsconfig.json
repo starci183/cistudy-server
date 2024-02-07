@@ -23,7 +23,8 @@
       "@database": ["src/database"],
       "@global": ["src/global"],
       "@controllers": ["src/controllers"],
-      "@resolvers": ["src/resolvers"]
+      "@resolvers": ["src/resolvers"],
+      "@workers": ["src/workers"]
     }
   }
 }
