@@ -15,5 +15,5 @@ export class CreateLectureInput implements IAuthInput<CreateLectureData> {
 	@IsUUID("4")
 		userId: string
 	data: CreateLectureData
-	files?: Express.Multer.File[]
+	files: Express.Multer.File[]
 }

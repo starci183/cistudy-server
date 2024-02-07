@@ -16,5 +16,4 @@ export class CreateSectionInput implements IAuthInput<CreateSectionData> {
 	@IsUUID("4")
 		userId: string
 	data: CreateSectionData
-	files?: Express.Multer.File[]
 }
