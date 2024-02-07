@@ -8,14 +8,14 @@ import { AnyFile } from "@common"
 @Injectable()
 export default class ProcessMpegDashProducer {
     constructor(
-    private readonly mpegDashProcessorService: ProcessMpegDashService,
+    private readonly processMpegDashService: ProcessMpegDashService,
     @InjectQueue(QUEUE_NAME) private readonly convertQueue: Queue,
     ) {}
 
     async add(file: AnyFile) {
-        const metadata = await this.mpegDashProcessorService.createTask(file)
+        const metadata = await this.processMpegDashService.createTask(file)
         await this.convertQueue.add(metadata)
-        //await this.mpegDashProcessorService.processVideo(metadata)
+        //await this.processMpegDashService.processVideo(metadata)
         return metadata
     }
 }

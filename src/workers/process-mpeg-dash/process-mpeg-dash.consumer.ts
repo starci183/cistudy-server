@@ -7,12 +7,12 @@ import { QUEUE_NAME } from "./process-mpeg-dash.constants"
 @Processor(QUEUE_NAME)
 export default class ProcessMpegDashConsumer {
     constructor(
-    private readonly mpegDashProcessorService: ProcessMpegDashService,
+    private readonly processMpegDashService: ProcessMpegDashService,
     ) {}
 
   @Process()
     async process(job: Job<Metadata>) {
-        await this.mpegDashProcessorService.processVideo(job.data)
+        await this.processMpegDashService.processVideo(job.data)
         return {}
     }
 
