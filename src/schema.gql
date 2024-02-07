@@ -1,4 +1,32 @@
-type UserModel {
+type Course {
+  courseId: ID!
+  title: String!
+  thumbnailId: String
+  description: String!
+  price: Float!
+  verifiedStatus: VerifiedStatus
+  isDraft: Boolean!
+  creator: UserEntity!
+  isDeleted: Boolean!
+  previewVideoId: String
+  targets: String
+  includes: String
+}
+
+enum VerifiedStatus {
+  Pending
+  Approved
+  Rejected
+}
+
+type PostEntity {
+  postId: ID!
+  title: String!
+  creatorId: String!
+  courseId: String!
+}
+
+type UserEntity {
   userId: ID!
   email: String!
   password: String
@@ -32,49 +60,11 @@ enum UserKind {
   Facebook
 }
 
-type CourseModel {
-  courseId: ID!
-  title: String!
-  thumbnailId: String
-  description: String!
-  price: Float!
-  verifiedStatus: VerifiedStatus
-  isDraft: Boolean!
-  creator: UserModel!
-  isDeleted: Boolean!
-  previewVideoId: String
-  targets: String
-  includes: String
-}
-
-enum VerifiedStatus {
-  Pending
-  Approved
-  Rejected
-}
-
-type PostModel {
-  postId: ID!
-  title: String!
-  course: CourseModel!
-  postContents: [PostContentEntity!]!
-  creator: UserModel!
-}
-
-type PostContentEntity {
-  postContentId: ID!
-  index: Int!
-  content: String!
-  contentType: String!
-  postId: String!
-  post: [PostModel!]!
-}
-
 type Query {
-  findOneCourse(input: FindOneCourseInput!): CourseModel!
-  findManyCourses(input: FindManyCoursesInput): [CourseModel!]!
-  findOnePost(input: FindOnePostInput!): PostModel!
-  findManyPosts(input: FindManyPostsInput!): [PostModel!]!
+  findOneCourse(input: FindOneCourseInput!): Course!
+  findManyCourses(input: FindManyCoursesInput): [Course!]!
+  findOnePost(input: FindOnePostInput!): PostEntity!
+  findManyPosts(input: FindManyPostsInput!): [PostEntity!]!
 }
 
 input FindOneCourseInput {

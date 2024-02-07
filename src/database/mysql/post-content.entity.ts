@@ -9,7 +9,6 @@ import {
 import PostEntity from "./post.entity"
 import { ContentType } from "@common"
 import { Field, ID, Int, ObjectType } from "@nestjs/graphql"
-import { PostModel } from "src/resolvers/shared"
 
 @ObjectType()
 @Entity("post_content")
@@ -34,7 +33,7 @@ export default class PostContentEntity {
   @Column({ type: "uuid", length: 36 })
   	postId: string
 
-  @Field(() => [PostModel])
+  @Field(() => [PostEntity])
   @ManyToOne(() => PostEntity, (post) => post.postContents)
   @JoinColumn({ name: "postId" })
   	post: PostEntity
