@@ -1,8 +1,7 @@
-export const getEnvironmentString = (
-    developmentValue: string,
-    productionValue: string,
-): string => {
-    return process.env.NODE_ENV === "development"
-        ? developmentValue
-        : productionValue
+export const getEnvValue = (values: {
+  development: string;
+  production?: string;
+}): string => {
+    const { development, production } = values
+    return process.env.NODE_ENV === "production" ? production : development
 }

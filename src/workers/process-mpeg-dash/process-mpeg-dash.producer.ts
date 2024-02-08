@@ -14,8 +14,8 @@ export default class ProcessMpegDashProducer {
 
     async add(file: AnyFile) {
         const metadata = await this.processMpegDashService.createTask(file)
-        await this.convertQueue.add(metadata)
-        //await this.processMpegDashService.processVideo(metadata)
+        //await this.convertQueue.add(metadata)
+        await this.processMpegDashService.processVideo(metadata)
         return metadata
     }
 }

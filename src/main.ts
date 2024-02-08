@@ -4,10 +4,13 @@ import appConfig from "./config/env/app.config"
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger"
 import { CourseResolvers, PostResolvers } from "@resolvers"
 import { promises as fsPromises } from "fs"
-import { GraphQLSchemaBuilderModule, GraphQLSchemaFactory } from "@nestjs/graphql"
+import {
+    GraphQLSchemaBuilderModule,
+    GraphQLSchemaFactory,
+} from "@nestjs/graphql"
 import { printSchema } from "graphql"
 import { join } from "path"
-import { getEnvironmentString } from "@utils"
+import { getEnvValue } from "@utils"
 
 const generateSchema = async () => {
     const app = await NestFactory.create(GraphQLSchemaBuilderModule)
@@ -21,7 +24,7 @@ const generateSchema = async () => {
     await fsPromises.writeFile(
         join(
             process.cwd(),
-            `${getEnvironmentString("src", "dist")}/schema.gql`,
+            `${getEnvValue({ development: "src", production: "dist" })}/schema.gql`,
         ),
         printSchema(schema),
     )
@@ -34,9 +37,7 @@ async function bootstrap() {
 
     const config = new DocumentBuilder()
         .setTitle("CiStudy API Gateway")
-        .setDescription(
-            "...",
-        )
+        .setDescription("...")
         .setVersion("1.0")
         .addBearerAuth()
         .build()
@@ -45,7 +46,6 @@ async function bootstrap() {
     SwaggerModule.setup("/", app, document, {
         swaggerOptions: { defaultModelsExpandDepth: -1 },
     })
-
 
     await app.listen(appConfig().port || 3001)
 }
