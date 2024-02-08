@@ -1,43 +1,11 @@
 import { Injectable } from "@nestjs/common"
 import { join } from "path"
-import { exec } from "child_process"
 import { pathsConfig } from "@config"
-import { getEnvValue } from "@utils"
-
-const BINARY_PATH = join(
-    process.cwd(),
-    "tools",
-    getEnvValue({
-        development: "Bento4-Windows",
-        production: "Bento4-Docker",
-    }),
-    "bin",
-)
+import ShellService from "./shell.service"
 
 @Injectable()
 export default class Bento4Service {
-    private async execute(command: string): Promise<string> {
-        return new Promise((resolve, reject) => {
-            exec(
-                command,
-                {
-                    cwd: BINARY_PATH,
-                    shell: getEnvValue({
-                        development: "powershell.exe",
-                    }),
-                },
-                (error, stdout, stderr) => {
-                    if (error) {
-                        reject(error)
-                    }
-                    if (stderr) {
-                        reject(stderr)
-                    }
-                    resolve(stdout)
-                },
-            )
-        })
-    }
+    constructor(private readonly shellService: ShellService) {}
 
     async checkFragments(assetId: string, videoName: string) {
         const videoPath = join(
@@ -46,8 +14,8 @@ export default class Bento4Service {
             videoName,
         )
 
-        const execResult = await this.execute(
-            `${getEnvValue({ development: "./mp4info.exe", production: "./mp4info" })} "${videoPath}"`,
+        const execResult = await this.shellService.execute(
+            `mp4info "${videoPath}"`,
         )
         const lines = execResult.split("\n")
 
@@ -80,8 +48,8 @@ export default class Bento4Service {
             `${videoName}_fragmented`,
         )
 
-        const execResult = await this.execute(
-            `${getEnvValue({ development: "./mp4fragment.exe", production: "./mp4fragment" })}  --fragment-duration 4000 "${videoPath}" "${outputDir}"`,
+        const execResult = await this.shellService.execute(
+            `mp4fragment --fragment-duration 4000 "${videoPath}" "${outputDir}"`,
         )
 
         const lines = execResult.split("\n")
@@ -113,8 +81,8 @@ export default class Bento4Service {
             assetId,
         )
 
-        const execResult = await this.execute(
-            `${getEnvValue({ development: "./mp4dash.bat", production: "sh ./mp4dash" })} --mpd-name manifest.mpd ${line} -o "${outputDir}" --use-segment-timeline --subtitles --force`,
+        const execResult = await this.shellService.execute(
+            `mp4dash --mpd-name manifest.mpd ${line} -o "${outputDir}" --use-segment-timeline --subtitles --force`,
         )
         const lines = execResult.split("\n")
 

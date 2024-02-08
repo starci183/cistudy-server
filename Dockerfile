@@ -12,7 +12,7 @@ ARG NODE_VERSION=21.6.1
 # Use node image for base image for all stages.
 FROM node:${NODE_VERSION}-alpine as base
 
-#Add python
+#Add deps
 RUN apk add --no-cache python3
 RUN apk add --no-cache ffmpeg
 RUN apk add --no-cache libc6-compat
@@ -65,6 +65,12 @@ RUN mkdir -p /usr/src/app/tasks/process-mpeg-dash
 RUN mkdir -p /usr/src/app/tools/Bento4-Docker
 COPY tools/Bento4-Docker /usr/src/app/tools/Bento4-Docker
 
+#Add variables
+ENV PATH=$PATH:/usr/src/app/tools/Bento4-Docker/bin
+
+#Make mp4dash executable
+RUN chmod +x /usr/src/app/tools/Bento4-Docker/bin/mp4dash
+
 # Copy package.json so that package manager commands can be used.
 COPY package.json .
 
@@ -73,11 +79,12 @@ COPY package.json .
 COPY --from=deps /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/dist ./dist
 
-# # allow node to read write ./dist
+## allow node to read write ./dist
 RUN chown -R node:node ./dist
 RUN chown -R node:node ./tasks/process-mpeg-dash
+
 # Run the application as a non-root user.
-#USER node
+USER node
 
 # Expose the port that the application listens on.
 EXPOSE 3001

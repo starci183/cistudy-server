@@ -8,7 +8,7 @@ export type MinimalFile = {
   fileBody: string | Buffer;
 };
 
-export type AnyFile = MinimalFile | Express.Multer.File
+export type AnyFile = MinimalFile | Express.Multer.File;
 
 export const isMinimalFile = (value: unknown): value is MinimalFile => {
     if (typeof value !== "object" || value === null) {
